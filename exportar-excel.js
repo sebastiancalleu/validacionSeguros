@@ -5,13 +5,19 @@ const { dataPlacas } = require('./INFORMACION_LISTA_EXPORTACION');
 workbook.xlsx.readFile('seguros.xlsx')
     .then(function() {
         let count = 0;
-        for (let index = 2; index < 5000; index++ ) {
+        let countNotFound = 0;
+        for (let index = 2; index <= 5942; index++ ) {
             var worksheet = workbook.getWorksheet(1);
             var row = worksheet.getRow(index);
             const placa = row.getCell(1).value
             const placaFinded = dataPlacas.find((infoPlaca) => infoPlaca.placa === placa.toUpperCase().trim());
             if (placaFinded) {
                 row.getCell(2).value = Number(placaFinded.modelo);
+                if(placaFinded.vehiculo) {
+                    row.getCell(3).value = placaFinded.vehiculo;
+                    row.getCell(4).value = placaFinded.marca;
+                }
+
                 row.getCell(6).value = placaFinded.nombres;
                 if(Number(placaFinded.cedula) !== row.getCell(7).value) {
                     row.getCell(8).value = 'X';
@@ -26,12 +32,14 @@ workbook.xlsx.readFile('seguros.xlsx')
                 row.commit();
                 count += 1;
             } else {
-                if (index < 3700) {
-                    console.log(placa)
-                }
+                countNotFound += 1;
             }
         }
 
-        console.log(count)
-        return workbook.xlsx.writeFile('new3700.xlsx');
+        console.log("datos modificados: ", count)
+        console.log("datos no modificados: ", countNotFound)
+
+        console.log("datos totales: ", count + countNotFound)
+
+        return workbook.xlsx.writeFile('newALL.xlsx');
     })

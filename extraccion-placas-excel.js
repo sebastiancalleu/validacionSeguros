@@ -1,5 +1,5 @@
-const celdaInicial = 3601
-const celdaFinal = 3700
+const celdaInicial = 5801
+const celdaFinal = 5942
 
 
 
@@ -24,7 +24,16 @@ const executeImport = async () => {
     }
 
     console.log(`placas desde la celda ${celdaInicial} hasta la celda ${celdaFinal}`)
-    console.log(placas)
+
+    const fs = require('node:fs');
+
+    fs.writeFile('./PLACAS_EXCEL.js', JSON.stringify(placas, null, 4), err => {
+    if (err) {
+        console.error(err);
+    } else {
+        console.log("Los datos han sido extraidos al archivo PLACAS_EXCEL.js")
+    }
+    });
 }
 
 
